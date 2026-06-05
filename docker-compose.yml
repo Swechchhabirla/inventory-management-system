@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:16
+
+    container_name: postgres_db
+
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: inventory_db
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+
+    build: ./backend
+
+    container_name: inventory_backend
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - db
+
+  frontend:
+
+    build: ./frontend
+
+    container_name: inventory_frontend
+
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
